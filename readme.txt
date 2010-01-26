@@ -1,16 +1,16 @@
 === Houdini ===
 Contributors: phkcorp2005
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9674139
-Tags: houdini phk plagarism security copy protected
+Tags: houdini, phk, security, copy protected, plugin, javascript, protect, plagiarism, copyright, posts, Post 
 Requires at least: 2.9
 Tested up to: 2.9
 Stable tag: 1.0
 
-Provides a method to copy protect your webpages from plagarism and content theft.
+Provides a method to copy protect your webpages from plagiarism and content theft.
 
 == Description ==
 
-The fact is the internet is open can lead to theft especially to content stealing and plagarism.
+The fact is the internet is open can lead to theft especially to content stealing and plagiarism.
 
 Until now, there was very little to discourage and deter this serious crime. Yes content theft and
 plagarism is a crime in some jurisdictions.
