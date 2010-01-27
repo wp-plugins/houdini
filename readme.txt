@@ -3,8 +3,8 @@ Contributors: phkcorp2005
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9674139
 Tags: houdini, phk, security, copy protected, plugin, javascript, protect, plagiarism, copyright, posts, Post 
 Requires at least: 2.9
-Tested up to: 2.9
-Stable tag: 1.0
+Tested up to: 2.9.1
+Stable tag: 1.1
 
 Provides a method to copy protect your webpages from plagiarism and content theft.
 
@@ -54,10 +54,16 @@ placing the Houdini shortcode [houdini] on that page. Save and view the page. Th
 begin selecting text, that text will soon disappear and be deselected with nothing to copy!
 
 == Changelog ==
+= 1.1 =
+* Added entry field for admin configurable page text that raplaces the static text 'This page is copy protected'
+
 = 1.0 =
 * Created
 
 == Upgrade Notice ==
+= 1.1 =
+Added entry field for admin configurable page text that raplaces the static text 'This page is copy protected'
+
 
 == Credits ==
 

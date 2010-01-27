@@ -3,7 +3,7 @@
 Plugin Name: Houdini
 Plugin URI: http://www.phkcorp.com?do=wordpress
 Description: Prevents copying of a website through copy-n-paste of the rendered web pages
-Version: 1.0
+Version: 1.1
 Author: PHK Corporation
 Author URI: http://www.phkcorp.com
 */
@@ -28,6 +28,20 @@ Author URI: http://www.phkcorp.com
 
 */
 
+function addHoudiniSettingsTable ()
+{
+	global $wpdb;
+
+	if (is_admin()) {
+
+		$query = "CREATE TABLE IF NOT EXISTS `wp_houdini_settings` (
+  				`pagetext` varchar(255) NOT NULL)
+				ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+
+		$wpdb->query($query);
+	} // endif of is_admin()
+}
+
 
 //// Add page to options menu.
 function addHoudiniToManagementPage()
@@ -42,31 +56,55 @@ function displayHoudiniManagementPage()
 	global $wpdb;
 
 	if (is_admin()) {
+		// Create the tables, if they do not exist?
+		addHoudiniSettingsTable();
+
+		if (isset($_POST['houdini_update']))
+		{
+			//check_admin_referer();
+
+			$pageText = $_POST['houdini_text_tag'];
+			//if ($pageText == '') $pageText = 'This page is copy protected';
+
+			$wpdb->query("TRUNCATE TABLE wp_houdini_settings");
+
+			$sql = "insert into wp_houdini_settings (pagetext) values ('".$pageText."')";
+			$wpdb->query($sql);
+
+			// echo message updated
+			echo "<div class='updated fade'><p>Houdini settings have been updated.</p></div>";
+		}
+
+		$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
+		$pageText = $t[0];
 
 ?>
 		<div class="wrap">
 			<h2>Houdini</h2>
-<p>Provides a method to copy protect your webpages from plagarism and content theft.</p>
 
-<p>The fact is the internet is open and open to theft especially to content stealing and plagarism.</p>
 
-<p>Until now, there was very little to discourage and deter this serious crime. Yes content theft and
-plagarism is a crime in some jurisdictions.</p>
 
-<p>You cannot rely on others or the authorities to continue to police the internet as there as they
-do not have enough resources. You need to protect your content and deter this theft.</p>
-
-<p>The basic form of content theft is to copy and paste your content to another medium.</p>
-
-<p>Well Houdini, prevents this by using a little known special algorithm that prevents copying by
-making the selected text that is targeted by the perps to be copied to disappear! Yes disappear!!!
-The only way to recover is to reload the page in the web browser. If they try again, the content
-disappears again. As long as they keep trying to copy your content, the content will disappear
-before they can get a chance to execute the Ctrl-C command!</p>
-
-<p>After a few unsuccessful attempts, the theives will move on to a easier target.</p>
-
-<p>Your safe!</p>
+			<form method="post">
+				<fieldset class='options'>
+					<legend><h2><u>Settings</u></h2></legend>
+					<table class="editform" cellspacing="2" cellpadding="5" width="100%">
+						<tr>
+							<th width="30%" valign="top" style="padding-top: 10px;">
+								Page Text:
+							</th>
+							<td>
+								<input type='text' size='30' maxlength='80' name='houdini_text_tag' id='houdini_text_tag' value='<?php echo $pageText;?>' />
+								<br>Display a single line of text (or no text)<br>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+							<p class="submit"><input type='submit' name='houdini_update' value='Update' /></p>
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+			</form>
 
 
 				<fieldset class='options'>
@@ -143,6 +181,11 @@ window.setTimeout ("displayPage()", 100 );<br/>
 
 function show_houdini_javascript($atts, $content=null, $code="")
 {
+	global $wpdb;
+	$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
+
+	$pageText = $t[0];
+
 	$output = '
 <script language=javascript>
 function getSelText(){
@@ -174,7 +217,7 @@ function displayPage(){
 window.setTimeout ("displayPage()", 100 );
 
 </script>
-<center><h5>This page is copy protected</h5></center>
+<center><h5>'.$pageText.'</h5></center>
 	';
 
 
