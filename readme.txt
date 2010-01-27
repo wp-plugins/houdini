@@ -69,6 +69,8 @@ Added entry field for admin configurable page text that raplaces the static text
 
 We make honorable mention to anyone who helps make this plugin better!
 
+Special thanks to www.psychingoutthemarkets.com for their recommendation of a user configurable text field.
+
 == Contact ==
 
 Please contact phkcorp2005@gmail.com or visit www.phkcorp.com?do=wordpress with questions, comments, or requests.
