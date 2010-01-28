@@ -56,7 +56,7 @@ begin selecting text, that text will soon disappear and be deselected with nothi
 = Houdini does not work with Mozilla Firefox, Apple Safari, and Google Chrome? =
 
 The disappearance of selected text feature works only with Internet Explorer. Using one of the above browser, when
-you select more than 250 characters, that selection becomes unselected. Still annoyance to a content
+you select more than minimum characters defined in Admin|Settings|Houding page, that selection becomes unselected. Still annoyance to a content
 stealer when they do not expect this feature!
 
 == Changelog ==
