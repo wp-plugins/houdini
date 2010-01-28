@@ -53,6 +53,12 @@ You can test Houdini, after you have installed/activated, by creating a page wit
 placing the Houdini shortcode [houdini] on that page. Save and view the page. Then using your mouse,
 begin selecting text, that text will soon disappear and be deselected with nothing to copy!
 
+= Houdini does not work with Mozilla Firefox, Apple Safari, and Google Chrome? =
+
+The disappearance of selected text feature works only with Internet Explorer. Using one of the above browser, when
+you select more than 250 characters, that selection becomes unselected. Still annoyance to a content
+stealer when they do not expect this feature!
+
 == Changelog ==
 = 1.1 =
 * Added entry field for admin configurable page text that raplaces the static text 'This page is copy protected'
