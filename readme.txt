@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: houdini, phk, security, copy protected, plugin, javascript, protect, plagiarism, copyright, posts, Post 
 Requires at least: 2.9
 Tested up to: 2.9.1
-Stable tag: 1.1
+Stable tag: 1.2
 
 Provides a method to copy protect your webpages from plagiarism and content theft.
 
@@ -60,6 +60,9 @@ you select more than 250 characters, that selection becomes unselected. Still an
 stealer when they do not expect this feature!
 
 == Changelog ==
+= 1.2 =
+* Added entry field for admin configurable minimum selectable text size before de-selection occurs.
+
 = 1.1 =
 * Added entry field for admin configurable page text that raplaces the static text 'This page is copy protected'
 
@@ -67,6 +70,9 @@ stealer when they do not expect this feature!
 * Created
 
 == Upgrade Notice ==
+= 1.2 =
+Added entry field for admin configurable minimum selectable text size before de-selection occurs.
+
 = 1.1 =
 Added entry field for admin configurable page text that raplaces the static text 'This page is copy protected'
 

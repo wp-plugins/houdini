@@ -3,7 +3,7 @@
 Plugin Name: Houdini
 Plugin URI: http://www.phkcorp.com?do=wordpress
 Description: Prevents copying of a website through copy-n-paste of the rendered web pages
-Version: 1.1
+Version: 1.2
 Author: PHK Corporation
 Author URI: http://www.phkcorp.com
 */
@@ -39,6 +39,10 @@ function addHoudiniSettingsTable ()
 				ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 
 		$wpdb->query($query);
+
+		$query = "ALTER TABLE `wp_houdini_settings` ADD `textsize` INT NOT NULL DEFAULT '250'";
+		$wpdb->query($query);
+
 	} // endif of is_admin()
 }
 
@@ -66,17 +70,22 @@ function displayHoudiniManagementPage()
 			$pageText = $_POST['houdini_text_tag'];
 			//if ($pageText == '') $pageText = 'This page is copy protected';
 
+			$textSize = $_POST['houdini_textsize_tag'];
+			if ($textSize == '') $textSize = 0;
+
 			$wpdb->query("TRUNCATE TABLE wp_houdini_settings");
 
-			$sql = "insert into wp_houdini_settings (pagetext) values ('".$pageText."')";
+			$sql = "insert into wp_houdini_settings (pagetext,textsize) values ('".$pageText."','".$textSize."')";
 			$wpdb->query($sql);
 
 			// echo message updated
-			echo "<div class='updated fade'><p>Houdini settings have been updated.</p></div>";
+			echo "<div class='updated fade'><p>Houdini settings have been updated with.</p></div>";
 		}
 
 		$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
 		$pageText = $t[0];
+		$t = $wpdb->get_col("select textsize from wp_houdini_settings");
+		$textSize = $t[0];
 
 ?>
 		<div class="wrap">
@@ -95,6 +104,15 @@ function displayHoudiniManagementPage()
 							<td>
 								<input type='text' size='30' maxlength='80' name='houdini_text_tag' id='houdini_text_tag' value='<?php echo $pageText;?>' />
 								<br>Display a single line of text (or no text)<br>
+							</td>
+						</tr>
+						<tr>
+							<th width="30%" valign="top" style="padding-top: 10px;">
+								Text Size:
+							</th>
+							<td>
+								<input type='text' size='10' maxlength='10' name='houdini_textsize_tag' id='houdini_textsize_tag' value='<?php echo $textSize;?>' />
+								<br>Specify minimum selected text before deselection/disappearance<br>
 							</td>
 						</tr>
 						<tr>
@@ -185,6 +203,8 @@ function show_houdini_javascript($atts, $content=null, $code="")
 	$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
 
 	$pageText = $t[0];
+	$t = $wpdb->get_col("select textsize from wp_houdini_settings");
+	$textSize = $t[0];
 
 	$output = '
 <script language=javascript>
@@ -204,7 +224,7 @@ function getSelText(){
 }
 function displayPage(){
    len=getSelText();
-   if(len>250){
+   if(len>'.$textSize.'){
       if(window.getSelection){
          window.getSelection().removeAllRanges()
       } else if(document.selection&&document.selection.clear) {
@@ -223,6 +243,7 @@ window.setTimeout ("displayPage()", 100 );
 
 	return $output;
 }
+
 
 
 //
