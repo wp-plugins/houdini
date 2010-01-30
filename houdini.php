@@ -3,7 +3,7 @@
 Plugin Name: Houdini
 Plugin URI: http://www.phkcorp.com?do=wordpress
 Description: Prevents copying of a website through copy-n-paste of the rendered web pages
-Version: 1.2
+Version: 1.3
 Author: PHK Corporation
 Author URI: http://www.phkcorp.com
 */
@@ -28,6 +28,76 @@ Author URI: http://www.phkcorp.com
 
 */
 
+function houdini_wp_head()
+{
+	global $wpdb;
+
+	$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
+
+	$pageText = $t[0];
+	$t = $wpdb->get_col("select textsize from wp_houdini_settings");
+	$textSize = $t[0];
+
+	$output = '
+<script language=javascript>
+function getSelText(){
+   var txt="";
+   if(window.getSelection){
+     txt=window.getSelection()
+   } else if(document.getSelection){
+     txt=document.getSelection()
+   } else if(document.selection){
+     txt=document.selection.createRange().text
+   } else return 0;
+
+   txt+="";
+   len=txt.length;
+   return len
+}
+function displayPage(){
+   len=getSelText();
+   if(len>'.$textSize.'){
+      if(window.getSelection){
+         window.getSelection().removeAllRanges()
+      } else if(document.selection&&document.selection.clear) {
+         document.selection.clear()
+      }
+   }
+   window.setTimeout("displayPage()",100)
+}
+
+window.setTimeout ("displayPage()", 100 );
+
+</script>
+	';
+
+
+	$t = $wpdb->get_col("select global from wp_houdini_settings");
+	if ($t[0] == 'Y' && !is_admin()) {
+		echo $output;
+	}
+
+}
+
+function houdini_wp_footer()
+{
+	global $wpdb;
+
+	$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
+	$pageText = $t[0];
+	$t = $wpdb->get_col("select global from wp_houdini_settings");
+	$allPages = $t[0];
+
+	if ($allPages == 'Y' && !is_admin()) {
+		echo '<center><h5>'.$pageText.'</h5></center>';
+	}
+}
+
+function houdini_redirect_to()
+{
+	header("http://www.phkcorp.com");
+}
+
 function addHoudiniSettingsTable ()
 {
 	global $wpdb;
@@ -42,6 +112,8 @@ function addHoudiniSettingsTable ()
 
 		$query = "ALTER TABLE `wp_houdini_settings` ADD `textsize` INT NOT NULL DEFAULT '250'";
 		$wpdb->query($query);
+
+		$wpdb->query("ALTER TABLE `wp_houdini_settings` ADD `global` CHAR NOT NULL DEFAULT 'N'");
 
 	} // endif of is_admin()
 }
@@ -73,19 +145,25 @@ function displayHoudiniManagementPage()
 			$textSize = $_POST['houdini_textsize_tag'];
 			if ($textSize == '') $textSize = 0;
 
+			if (isset($_POST['houdini_allpages_tag'])) $allPages = 'Y';
+			if ($allPages == '') $allPages = 'N';
+
 			$wpdb->query("TRUNCATE TABLE wp_houdini_settings");
 
-			$sql = "insert into wp_houdini_settings (pagetext,textsize) values ('".$pageText."','".$textSize."')";
+			$sql = "insert into wp_houdini_settings (pagetext,textsize,global) values ('".$pageText."','".$textSize."','".$allPages."')";
 			$wpdb->query($sql);
 
 			// echo message updated
-			echo "<div class='updated fade'><p>Houdini settings have been updated with.</p></div>";
+			echo "<div class='updated fade'><p>Houdini settings have been updated</p></div>";
 		}
 
 		$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
 		$pageText = $t[0];
 		$t = $wpdb->get_col("select textsize from wp_houdini_settings");
 		$textSize = $t[0];
+		$t = $wpdb->get_col("select global from wp_houdini_settings");
+		if ($t[0] == 'Y') $allPages = 'checked';
+
 
 ?>
 		<div class="wrap">
@@ -116,6 +194,15 @@ function displayHoudiniManagementPage()
 							</td>
 						</tr>
 						<tr>
+							<th width="30%" valign="top" style="padding-top: 10px;">
+								On All Pages:
+							</th>
+							<td>
+								<input type='checkbox' size='10' maxlength='10' name='houdini_allpages_tag' id='houdini_allpages_tag' <?php echo $allPages;?> />
+								<br>Select to protect all pages/posts. Shortcode is ignored!<br>
+							</td>
+						</tr>
+						<tr>
 							<td colspan="2">
 							<p class="submit"><input type='submit' name='houdini_update' value='Update' /></p>
 							</td>
@@ -135,7 +222,37 @@ function displayHoudiniManagementPage()
 						<p><strong>To disable the context or right mouse click menu,</strong> add the following to the
 						body tag in your theme header.php [oncontextmenu="return false;" to look similar to
 						&lt;body oncontextmenu="return false;"&gt;]
-						<p>Now you have tight and full security over plagarism of your site</p>
+						<p><strong>Protecting a page when Javascript is OFF:</strong>&nbsp;Add the following code
+						to the start of your theme header.php<br /><br />
+						<code>
+						&lt;noscript&gt;<br />
+							&lt;?php header("Location: http://www.phkcorp.com"); exit(); ?&gt;<br />
+						&lt;/noscript&gt;<br />
+						</code>
+						<br>Replace the URL with the page that want to redirect when Javascript is disabled.<br />
+						<i>This only works for Internet Explorer</i>
+						</p>
+				</fieldset>
+
+				<fieldset class="options">
+					<legend><h2><u>Browser Security Breaches</u></h2>
+					<p>A special thanks to http://fourisland.com/blog/and-like-magic-nothing-happens/<br />
+					for pointing out these browser security breaches for content theft.</p>
+					<ol>
+					<li>Turn off JavaScript at the browser level</li>
+					<li>Using screen scrapers</li>
+					<li>Viewing source code</li>
+					<li>RSS Feeds</li>
+					<li>Print Screen keyboard button</li>
+					</ol>
+					<p><strong>Possible solutions to overcome these breaches?</strong></p>
+					<ol>
+					<li>Adding a noscript redirection tag</li>
+					<li>Password protect pages</li>
+					<li>Write your own custom browser or load pages through a Java applet. If Java is disabled, the page does not load.</li>
+					<li>Disable RSS feed syndication</li>
+					<li>Use non-print friendly fonts and colors specified in the print.css file</li>
+					</ol>
 				</fieldset>
 
 				<fieldset class='options'>
@@ -241,7 +358,12 @@ window.setTimeout ("displayPage()", 100 );
 	';
 
 
-	return $output;
+	$t = $wpdb->get_col("select global from wp_houdini_settings");
+	if ($t[0] == 'N') {
+		return $output;
+	}
+
+	return "";
 }
 
 
@@ -252,5 +374,7 @@ window.setTimeout ("displayPage()", 100 );
 
 add_shortcode('houdini', 'show_houdini_javascript');
 add_action('admin_menu', 'addHoudiniToManagementPage');
+add_action('wp_head', 'houdini_wp_head');
+add_action('wp_footer', 'houdini_wp_footer');
 
 ?>

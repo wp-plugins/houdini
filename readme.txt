@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: houdini, phk, security, copy protected, plugin, javascript, protect, plagiarism, copyright, posts, Post 
 Requires at least: 2.9
 Tested up to: 2.9.1
-Stable tag: 1.2
+Stable tag: 1.3
 
 Provides a method to copy protect your webpages from plagiarism and content theft.
 
@@ -39,7 +39,8 @@ To instal this plugin, follow these steps:
 3. Extract plugin to the `/wp-content/plugins/` directory as new directory will be created identified as 'houdini'
 4. Activate the plugin through the 'Plugins' menu in WordPress, identified by 'Houdini'
 5. Insert the shortcode [houdini] on the pages/posts that you want to protect from plagarism.
-6. Additional tips can be found on the Admin Settings|Houdini page.
+6. If you want to protect your existing/all pages/posts without adding the shortcode to each page, there is an option on the Admin Settings|Houdini page
+7. Additional tips can be found on the Admin Settings|Houdini page.
 
 == Frequently Asked Questions ==
 
@@ -60,6 +61,9 @@ you select more than minimum characters defined in Admin|Settings|Houding page, 
 stealer when they do not expect this feature!
 
 == Changelog ==
+= 1.3 =
+* Added check entry field to enable protection of all existing pages/post without adding the shortcode to these existing pages/posts
+
 = 1.2 =
 * Added entry field for admin configurable minimum selectable text size before de-selection occurs.
 
@@ -70,6 +74,9 @@ stealer when they do not expect this feature!
 * Created
 
 == Upgrade Notice ==
+= 1.3 =
+Added check entry field to enable protection of all existing pages/post without adding the shortcode to these existing pages/posts
+ 
 = 1.2 =
 Added entry field for admin configurable minimum selectable text size before de-selection occurs.
 
@@ -82,6 +89,10 @@ Added entry field for admin configurable page text that raplaces the static text
 We make honorable mention to anyone who helps make this plugin better!
 
 Special thanks to www.psychingoutthemarkets.com for their recommendation of a user configurable text field.
+
+Special thanks to http://fourisland.com/blog/and-like-magic-nothing-happens/for pointing out these browser security breaches for content theft. See Admin Settings|Houdini for tips to overcome these breaches!
+
+Special thanks to [TBA] for their recommendation of a user configurable check entry for protecting all pages
 
 == Contact ==
 
