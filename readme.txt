@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: houdini, phk, security, copy protected, plugin, javascript, protect, plagiarism, copyright, posts, Post 
 Requires at least: 2.9
 Tested up to: 2.9.1
-Stable tag: 1.3
+Stable tag: 1.4
 
 Provides a method to copy protect your webpages from plagiarism and content theft.
 
@@ -28,11 +28,19 @@ before they can get a chance to execute the copy command!
 
 After a few unsuccessful attempts, the theives will move on to a easier target.
 
-Your safe!
+A user became very critical whether houdini can actually protect you from content thieves, and that
+user gave five critical breaches that was claimed unprotectable. Well, houdini now protects from those
+breaches either directly or indirectly by giving you tips for your theme modification.
+
+Additional tips for protecting pages when javascript is disabled at the browser-level, prevent a page
+from being printed, embed a watermark to pages for screen capturers, disable RSS and password protect
+oages.
+
+Your are safer!
 
 == Installation ==
 
-To instal this plugin, follow these steps:
+To install this plugin, follow these steps:
 
 1. Download the plugin houdini.zip
 2. Extract the single file houdinin.php
@@ -61,6 +69,9 @@ you select more than minimum characters defined in Admin|Settings|Houding page, 
 stealer when they do not expect this feature!
 
 == Changelog ==
+= 1.4 =
+* Fixes the MySQL error: WordPress database error: [Duplicate column name 'textsize'] ALTER TABLE `wp_houdini_settings` ADD `textsize` INT NOT NULL DEFAULT '250' for certain MySQL installations
+
 = 1.3 =
 * Added check entry field to enable protection of all existing pages/post without adding the shortcode to these existing pages/posts
 
@@ -74,6 +85,9 @@ stealer when they do not expect this feature!
 * Created
 
 == Upgrade Notice ==
+= 1.4 =
+Fixes the MySQL error: WordPress database error: [Duplicate column name 'textsize'] ALTER TABLE `wp_houdini_settings` ADD `textsize` INT NOT NULL DEFAULT '250' for certain MySQL installations
+
 = 1.3 =
 Added check entry field to enable protection of all existing pages/post without adding the shortcode to these existing pages/posts
  

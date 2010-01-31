@@ -3,7 +3,7 @@
 Plugin Name: Houdini
 Plugin URI: http://www.phkcorp.com?do=wordpress
 Description: Prevents copying of a website through copy-n-paste of the rendered web pages
-Version: 1.3
+Version: 1.4
 Author: PHK Corporation
 Author URI: http://www.phkcorp.com
 */
@@ -28,14 +28,40 @@ Author URI: http://www.phkcorp.com
 
 */
 
+
+function houdini_activation()
+{
+	global $wpdb;
+
+	if (is_admin()) {
+
+		$query = "CREATE TABLE IF NOT EXISTS `wp_houdini_setting` (
+					`name` VARCHAR( 80 ) NOT NULL ,
+					`value` VARCHAR( 255 ) NOT NULL
+					) ENGINE = MYISAM ";
+		$wpdb->query($query);
+
+		$wpdb->query("INSERT INTO wp_houdini_setting (name,value) VALUES ('pagetext','This page is copy protected')");
+		$wpdb->query("INSERT INTO wp_houdini_setting (name,value) VALUES ('textsize','10')");
+		$wpdb->query("INSERT INTO wp_houdini_setting (name,value) VALUES ('global','N')");
+
+	} // endif of is_admin()
+}
+
+function houdini_deactivation()
+{
+	global $wpdb;
+
+	$wpdb->query("DROP TABLE IF EXISTS wp_houdini_settings");
+}
+
 function houdini_wp_head()
 {
 	global $wpdb;
 
-	$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
-
+	$t = $wpdb->get_col("select value from wp_houdini_setting where name='pagetext'");
 	$pageText = $t[0];
-	$t = $wpdb->get_col("select textsize from wp_houdini_settings");
+	$t = $wpdb->get_col("select value from wp_houdini_setting where name='textsize'");
 	$textSize = $t[0];
 
 	$output = '
@@ -72,7 +98,7 @@ window.setTimeout ("displayPage()", 100 );
 	';
 
 
-	$t = $wpdb->get_col("select global from wp_houdini_settings");
+	$t = $wpdb->get_col("select value from wp_houdini_setting where name='global'");
 	if ($t[0] == 'Y' && !is_admin()) {
 		echo $output;
 	}
@@ -83,9 +109,9 @@ function houdini_wp_footer()
 {
 	global $wpdb;
 
-	$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
+	$t = $wpdb->get_col("select value from wp_houdini_setting where name='pagetext'");
 	$pageText = $t[0];
-	$t = $wpdb->get_col("select global from wp_houdini_settings");
+	$t = $wpdb->get_col("select value from wp_houdini_setting where name='global'");
 	$allPages = $t[0];
 
 	if ($allPages == 'Y' && !is_admin()) {
@@ -104,16 +130,16 @@ function addHoudiniSettingsTable ()
 
 	if (is_admin()) {
 
-		$query = "CREATE TABLE IF NOT EXISTS `wp_houdini_settings` (
-  				`pagetext` varchar(255) NOT NULL)
-				ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+		//$query = "CREATE TABLE IF NOT EXISTS `wp_houdini_settings` (
+  		//		`pagetext` varchar(255) NOT NULL)
+		//		ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 
-		$wpdb->query($query);
+		//$wpdb->query($query);
 
-		$query = "ALTER TABLE `wp_houdini_settings` ADD `textsize` INT NOT NULL DEFAULT '250'";
-		$wpdb->query($query);
+		//$query = "ALTER TABLE `wp_houdini_settings` ADD `textsize` INT NOT NULL DEFAULT '250'";
+		//$wpdb->query($query);
 
-		$wpdb->query("ALTER TABLE `wp_houdini_settings` ADD `global` CHAR NOT NULL DEFAULT 'N'");
+		//$wpdb->query("ALTER TABLE `wp_houdini_settings` ADD `global` CHAR NOT NULL DEFAULT 'N'");
 
 	} // endif of is_admin()
 }
@@ -133,7 +159,7 @@ function displayHoudiniManagementPage()
 
 	if (is_admin()) {
 		// Create the tables, if they do not exist?
-		addHoudiniSettingsTable();
+		//addHoudiniSettingsTable();
 
 		if (isset($_POST['houdini_update']))
 		{
@@ -148,22 +174,25 @@ function displayHoudiniManagementPage()
 			if (isset($_POST['houdini_allpages_tag'])) $allPages = 'Y';
 			if ($allPages == '') $allPages = 'N';
 
-			$wpdb->query("TRUNCATE TABLE wp_houdini_settings");
+			//$wpdb->query("TRUNCATE TABLE wp_houdini_settings");
 
-			$sql = "insert into wp_houdini_settings (pagetext,textsize,global) values ('".$pageText."','".$textSize."','".$allPages."')";
-			$wpdb->query($sql);
+			//$sql = "insert into wp_houdini_settings (pagetext,textsize,global) values ('".$pageText."','".$textSize."','".$allPages."')";
+			//$wpdb->query($sql);
+			$wpdb->query("update wp_houdini_setting set value='".$pageText."' where name='pagetext'");
+			$wpdb->query("update wp_houdini_setting set value='".$textSize."' where name='textsize'");
+			$wpdb->query("update wp_houdini_setting set value='".$allPages."' where name='global'");
+
 
 			// echo message updated
 			echo "<div class='updated fade'><p>Houdini settings have been updated</p></div>";
 		}
 
-		$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
+		$t = $wpdb->get_col("select value from wp_houdini_setting where name='pagetext'");
 		$pageText = $t[0];
-		$t = $wpdb->get_col("select textsize from wp_houdini_settings");
+		$t = $wpdb->get_col("select value from wp_houdini_setting where name='textsize'");
 		$textSize = $t[0];
-		$t = $wpdb->get_col("select global from wp_houdini_settings");
+		$t = $wpdb->get_col("select value from wp_houdini_setting where name='global'");
 		if ($t[0] == 'Y') $allPages = 'checked';
-
 
 ?>
 		<div class="wrap">
@@ -176,7 +205,7 @@ function displayHoudiniManagementPage()
 					<legend><h2><u>Settings</u></h2></legend>
 					<table class="editform" cellspacing="2" cellpadding="5" width="100%">
 						<tr>
-							<th width="30%" valign="top" style="padding-top: 10px;">
+							<th width="30%" valign="top" style="padding-top: 10px;" align="left">
 								Page Text:
 							</th>
 							<td>
@@ -185,7 +214,7 @@ function displayHoudiniManagementPage()
 							</td>
 						</tr>
 						<tr>
-							<th width="30%" valign="top" style="padding-top: 10px;">
+							<th width="30%" valign="top" style="padding-top: 10px;" align="left">
 								Text Size:
 							</th>
 							<td>
@@ -194,7 +223,7 @@ function displayHoudiniManagementPage()
 							</td>
 						</tr>
 						<tr>
-							<th width="30%" valign="top" style="padding-top: 10px;">
+							<th width="30%" valign="top" style="padding-top: 10px;" align="left">
 								On All Pages:
 							</th>
 							<td>
@@ -232,6 +261,24 @@ function displayHoudiniManagementPage()
 						<br>Replace the URL with the page that want to redirect when Javascript is disabled.<br />
 						<i>This only works for Internet Explorer</i>
 						</p>
+						<p><strong>Preventing Printing of Pages:</strong>&nbsp;Add the following code to the header.php
+						of your theme.<br>
+						<code><br/>
+						&lt;style type="text/css" media="print"&gt;<br/>
+						body { visibility: hidden; display: none }<br/>
+						&lt;/style&gt;
+						</code>
+						</p>
+						<p>When the user performs a File|Print or File|Print Preview, a blank page is shown instead.</p>
+						<p><strong>Display a Watermark:</strong>&nbsp;To display a watermark requires an image conducive to your
+						page theme and then modify the body tag in the header.php of your theme.<br><br>
+						<code>
+						&lt;body background="[image filename]"&gt;
+						</code>
+						</p>
+						<p><strong>To Disable RSS</strong> the following plugin is recommended at
+						http://wordpress.org/extend/plugins/disable-rss/</p>
+						<p><strong>To Password Protect a Page</strong> the following plugin is recommended at http://wordpress.org/extend/plugins/page-protection/</p>
 				</fieldset>
 
 				<fieldset class="options">
@@ -249,9 +296,9 @@ function displayHoudiniManagementPage()
 					<ol>
 					<li>Adding a noscript redirection tag</li>
 					<li>Password protect pages</li>
-					<li>Write your own custom browser or load pages through a Java applet. If Java is disabled, the page does not load.</li>
+					<li>Transform text to images</li>
 					<li>Disable RSS feed syndication</li>
-					<li>Use non-print friendly fonts and colors specified in the print.css file</li>
+					<li>Use a watermark on pages</li>
 					</ol>
 				</fieldset>
 
@@ -317,10 +364,10 @@ window.setTimeout ("displayPage()", 100 );<br/>
 function show_houdini_javascript($atts, $content=null, $code="")
 {
 	global $wpdb;
-	$t = $wpdb->get_col("select pagetext from wp_houdini_settings");
+	$t = $wpdb->get_col("select value from wp_houdini_setting where name='pagetext'");
 
 	$pageText = $t[0];
-	$t = $wpdb->get_col("select textsize from wp_houdini_settings");
+	$t = $wpdb->get_col("select value from wp_houdini_setting where name='textsize'");
 	$textSize = $t[0];
 
 	$output = '
@@ -358,7 +405,7 @@ window.setTimeout ("displayPage()", 100 );
 	';
 
 
-	$t = $wpdb->get_col("select global from wp_houdini_settings");
+	$t = $wpdb->get_col("select value from wp_houdini_setting where name='global'");
 	if ($t[0] == 'N') {
 		return $output;
 	}
@@ -376,5 +423,8 @@ add_shortcode('houdini', 'show_houdini_javascript');
 add_action('admin_menu', 'addHoudiniToManagementPage');
 add_action('wp_head', 'houdini_wp_head');
 add_action('wp_footer', 'houdini_wp_footer');
+
+register_activation_hook(__FILE__,"houdini_activation");
+register_deactivation_hook(__FILE__,"houdini_deactivation");
 
 ?>
