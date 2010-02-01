@@ -106,7 +106,7 @@ Special thanks to www.psychingoutthemarkets.com for their recommendation of a us
 
 Special thanks to http://fourisland.com/blog/and-like-magic-nothing-happens/for pointing out these browser security breaches for content theft. See Admin Settings|Houdini for tips to overcome these breaches!
 
-Special thanks to [TBA] for their recommendation of a user configurable check entry for protecting all pages
+Special thanks to http://www.idreia.com for their recommendation of a user configurable check entry for protecting all pages
 
 == Contact ==
 
