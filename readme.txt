@@ -110,4 +110,6 @@ Special thanks to http://www.idreia.com for their recommendation of a user confi
 
 == Contact ==
 
+For support, go to http://support.phkcorp.com and request to join the Houdini fourm.
+
 Please contact phkcorp2005@gmail.com or visit www.phkcorp.com?do=wordpress with questions, comments, or requests.
